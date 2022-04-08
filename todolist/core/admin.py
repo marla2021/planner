@@ -1,13 +1,71 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
+from todolist.core.models import User
 
 
 @admin.register(User)
-class UserAdmin(UserAdmin):
-    list_display = ("username", "email", "first_name", "last_name" )
+class UserAdmin(BaseUserAdmin):
+    list_display = ("username", "email", "first_name", "last_name")
+    search_fields = ("email", "first_name", "last_name")
     list_filter = ("is_staff", "is_active", "is_superuser")
-    search_fields = ("emailfirst_name", "last_name", "username")
-    exclude = ("password", )
-    readonly_fields = ["Last login", "Date joined",]
+    readonly_fields = ("last_login", "date_joined")
+    fieldsets = (
+        (None, {"fields": ("username", "password")}),
+        (
+            "Personal info",
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "email",
+                )
+            },
+        ),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                )
+            },
+        ),
+        (
+            "Important dates",
+            {
+                "fields": (
+                    "last_login",
+                    "date_joined",
+                )
+            },
+        ),
+    )
+    add_fieldsets = (
+        (None, {"fields": ("username", "password1", "password2")}),
+        (
+            "Personal info",
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "email",
+                )
+            },
+        ),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                )
+            },
+        ),
+    )
+
 
