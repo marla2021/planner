@@ -1,5 +1,4 @@
 version: "3.9"
-
 services:
   api:
     build:
@@ -13,15 +12,6 @@ services:
         condition: service_completed_successfully
     volumes:
       - ./.docker_env:/app/.env
-  migrations:
-    build:
-      context: .
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - ./.docker_env:/app/.env
-    command: python manage.py migrate
   postgres:
     image: postgres:latest
     environment:
@@ -34,3 +24,14 @@ services:
       retries: 5
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+  migrations:
+    build:
+      context: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./.docker_env:/app/.env
+    command: python manage.py migrate
+
+
