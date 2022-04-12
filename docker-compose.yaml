@@ -15,16 +15,18 @@ services:
       migrations:
         condition: service_completed_successfully
     volumes:
-      - ./docker_.env:/planner/.env
+      - ./env:/planner/.docker_env
   migrations:
     build:
       context: .
     depends_on:
       postgres:
         condition: service_healthy
+    environment:
+      DB_HOST: postgres
     volumes:
-      - ./docker_.env:/planner/.env
-    command: python manage.py migrate
+      - ./env:/planner/.docker_env
+    command: python3 manage.py migrate
   postgres:
     image: postgres:latest
     environment:
