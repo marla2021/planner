@@ -1,23 +1,23 @@
 version: "3.9"
 services:
   api:
-    image: marla4/planner:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: sermalenk/skypro-front:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     ports:
-    - 80:80
+    - 80:8000
     depends_on:
       postgres:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
     volumes:
-      - ./docker_config.py:/code/default_config.py
+      - ./docker_config.py:/code/config.py
   migrations:
-    image: marla4/planner:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: marla4/planner_migrations_1:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
-      - ./docker_config.py:/code/default_config.py
+      - ./docker_config.py:/code/config.py
     command: django db upgrade
   postgres:
     image: postgres:latest
