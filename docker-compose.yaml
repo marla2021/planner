@@ -3,21 +3,19 @@ services:
   front:
     image: sermalenk/skypro-front:base
     ports:
-      - 80:8000
+      - 8080:80
     depends_on:
       - api
   api:
     build:
       context: .
-    ports:
-      - 80:8000
     depends_on:
       postgres:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
     volumes:
-      - ./.env:/planner/.docker_env
+      - ./docker_.env:/planner/.env
   migrations:
     build:
       context: .
@@ -25,7 +23,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./.env:/planner/.docker_env
+      - ./docker_.env:/planner/.env
     command: python manage.py migrate
   postgres:
     image: postgres:latest
