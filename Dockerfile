@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-WORKDIR app/
+WORKDIR planner/
 RUN apt update \
     && apt install -y \
     gcc \
@@ -10,5 +10,5 @@ RUN apt update \
     && rm -rf /tmp/* /var/tmp/*
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-COPY . /app
+COPY . /planner
 CMD python manage.py runserver 0.0.0.0:8000
