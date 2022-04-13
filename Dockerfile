@@ -1,8 +1,14 @@
 FROM python:3.10-slim
 
-WORKDIR planner/
-#RUN apt install libpq-dev
+WORKDIR app/
+RUN apt update \
+    && apt install -y \
+    gcc \
+    libpq-dev \
+    && apt autoclean && apt autoremove \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* /var/tmp/*
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-COPY . /planner
+COPY . /app
 CMD python manage.py runserver 0.0.0.0:8000
