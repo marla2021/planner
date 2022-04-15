@@ -1,14 +1,14 @@
-FROM python:3.10-slim
+FROM --platform=linux/amd64 python:3.10-slim
 
-WORKDIR planner/
-RUN apt update \
-    && apt install -y \
-    gcc \
-    libpq-dev \
-    && apt autoclean && apt autoremove \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/* /var/tmp/*
-COPY requirements.txt .
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR app/
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt .
 RUN pip install -r requirements.txt
-COPY . /planner
-CMD python manage.py runserver 0.0.0.0:8000
+
+COPY . /app

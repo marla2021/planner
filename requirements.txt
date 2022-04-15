@@ -6,3 +6,4 @@ psycopg2-binary==2.9.3
 psycopg2-pool==1.1
 python-dotenv==0.20.0
 sqlparse==0.4.2
+djangorestframework==3.13.1
