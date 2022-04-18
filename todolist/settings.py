@@ -161,7 +161,10 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
     'django.contrib.auth.hashers.ScryptPasswordHasher',
 ]
-
+AUTHENTICATION_BACKENDS = (
+    "social_core.backends.vk.VKOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+)
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_URL_NAMESPACE = "social"
 SOCIAL_AUTH_PIPELINE = (
