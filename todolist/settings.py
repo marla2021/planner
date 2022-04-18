@@ -13,15 +13,12 @@ import os
 from os import environ
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from dotenv import load_dotenv
+from environ import Env
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-from environ import Env
-
-load_dotenv()
 ALLOWED_HOSTS = ["*"]
 env = Env()
 env.read_env()
@@ -87,10 +84,10 @@ WSGI_APPLICATION = 'todolist.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB', 'td'),
-        'USER': os.environ.get('POSTGRES_USER', 'marla'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', '123'),
-        'HOST': '127.0.0.1',
+        'NAME': 'todolist',
+        'USER': 'marla',
+        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': '5432',
     },
 }
@@ -123,7 +120,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -134,7 +130,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -183,3 +178,23 @@ SOCIAL_AUTH_VK_OAUTH2_SECRET = env("SOCIAL_AUTH_VK_OAUTH2_SECRET")
 SOCIAL_AUTH_VK_OAUTH2_SCOPE = ["email", "photos", "notify"]
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/logged-in/"
 SOCIAL_AUTH_LOGIN_ERROR_URL = "/login-error/"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

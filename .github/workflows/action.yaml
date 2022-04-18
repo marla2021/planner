@@ -1,46 +1,56 @@
-name: Build and deploy action
-on: [push]
-jobs:
-  build_and_push:
-    runs-on: ubuntu-latest
-    steps:
-      - name: clone code
-        uses: actions/checkout@v2
-      - name: docker build
-        run: docker build -t marla4/planner:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
-      - name: docker login
-        run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-      - name: docker push
-        run: docker push marla4/planner:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build_and_push
-    env:
-      DB_USER: marla
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-    steps:
-      - name: clone code
-        uses: actions/checkout@v2
-      - name: render configs
-        run: |
-          mkdir deploy
-          cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
-      - name: clone files to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          source: "deploy/docker-compose.yaml,deploy/docker_config.py"
-          target: "planner"
-          strip_components: 1
-      - name: run docker-compose
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            cd planner
-            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose up -d
+version: "3.9"
+
+services:
+
+  api:
+    image: marla4/planner
+    ports:
+      - 80:8000
+    environment:
+      DB_HOST: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    command: >
+      sh -c "python3 manage.py runserver 0.0.0.0:8000"
+
+  migrations:
+    image: marla4/planner
+    environment:
+      DB_HOST: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "python3 manage.py makemigrations &&
+            python3 manage.py migrate"
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: marla
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: todolist
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U marla -d todolist" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  pg_data:
