@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'social_django',
     'todolist',
     'core',
+    'goals',
 ]
 
 MIDDLEWARE = [
