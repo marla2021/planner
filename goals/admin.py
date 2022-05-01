@@ -12,14 +12,14 @@ class GoalCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Goal)
 class GoalAdmin(admin.ModelAdmin):
-    list_display = ("title", "user", "status", "priority", "due_date")
+    list_display = ["title", "user", "status", "priority", "due_date"]
     search_fields = ("title", "user")
     readonly_fields = ("created", "updated")
     list_filter = ("status", "priority")
 
 @admin.register(GoalComment)
 class GoalCommentAdmin(admin.ModelAdmin):
-    list_display = ("goal_id", "text", )
-    list_display_links = ("text")
-    search_fields = ("text")
+    list_display = ["goal_id", "text"]
+    list_display_links = ["text"]
+    search_fields = ["text"]
     readonly_fields = ("created", "updated")
