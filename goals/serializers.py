@@ -45,7 +45,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = GoalComment
         fields = '__all__'
-        read_only_fields = ('id', 'created', 'updated', 'goal')
+        read_only_fields = ('id', 'created', 'updated')
 
     def validated_goal(self, value):
         if value.user != self.context['request'].user:
@@ -55,7 +55,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(CommentCreateSerializer):
-    user = UserSerializer(read_only=True, source='goal.category.user')
+    user = UserSerializer(read_only=True, source='goal.user')
 
 
 
