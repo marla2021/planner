@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.http import JsonResponse
 from rest_framework import permissions
 from rest_framework.generics import (
     CreateAPIView,
@@ -19,12 +20,13 @@ from core.serializers import (
 
 class SignupView(CreateAPIView):
     model = User
-    permission_classes = [permissions.AllowAny]
     serializer_class = CreateUserSerializer
+    queryset = User.objects.all()
 
 
 class LoginView(GenericAPIView):
     serializer_class = LoginSerializer
+    queryset = User.objects.all()
 
     def post(self, request, *args, **kwargs):
         s: LoginSerializer = self.get_serializer(data=request.data)
@@ -55,3 +57,10 @@ class UpdatePasswordView(UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        user=serializer.save()
+        login(request=request, user=user, backend='django.contrib.auth.backends.Model')
+        return JsonResponse(data=serializer.data, status=200)

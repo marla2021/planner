@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -31,12 +32,13 @@ class CreateUserSerializer(serializers.ModelSerializer):
         return datas
 
     def create(self, validated_data):
+        validated_data['password'] = make_password(validate_password['password'])
         return User.objects.create_user(**validated_data)
 
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(write_only=True)
-    password = serializers.CharField(write_only=True)
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
 
     def validate(self, datas):
         username = datas.get("username")
