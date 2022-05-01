@@ -72,11 +72,12 @@ class UpdatePasswordSerializer(serializers.ModelSerializer):
         read_only_fields = ("id",)
         fields = ("old_password", "new_password")
 
-    def validate(self, datas):
+
+    def validate(self, datas: dict) -> dict:
         old_password = datas.get("old_password")
-        user = self.instance
+        user: User = self.instance
         if not user.check_password(old_password):
-            raise ValidationError({"old_password": "field is incorrect"})
+            raise ValidationError({'old_password': 'fields is incorrect'})
         return datas
 
     def update(self, instance: User, validated_data):
