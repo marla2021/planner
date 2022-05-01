@@ -4,7 +4,7 @@ from rest_framework import permissions, filters
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 
-from goals.models import GoalCategory
+from goals.models import GoalCategory, DatesModelMixin
 from goals.serializers import GoalCreateSerializer, GoalCategorySerializer
 
 
@@ -41,36 +41,7 @@ class GoalCategoryView(RetrieveUpdateDestroyAPIView):
         instance.save()
         return instance
 
-class Goal(DatesModelMixin):
     class Meta:
         verbose_name = "Цель"
         verbose_name_plural = "Цели"
 
-    class Status(models.IntegerChoices):
-        to_do = 1, "К выполнению"
-        in_progress = 2, "В процессе"
-        done = 3, "Выполнено"
-        archived = 4, "Архив"
-
-    class Priority(models.IntegerChoices):
-        low = 1, "Низкий"
-        medium = 2, "Средний"
-        high = 3, "Высокий"
-        critical = 4, "Критический"
-
-    title = models.CharField(verbose_name="Название", max_length=255)
-    description = models.CharField(verbose_name="Описание", max_length=255, null=True, blank=True)
-    # user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT)
-    is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
-    category = models.ForeignKey(GoalCategory, verbose_name="Категория", on_delete=models.PROTECT)
-    status = models.PositiveSmallIntegerField(
-        verbose_name="Статус",
-        choices=Status.choices,
-        default=Status.to_do
-    )
-    priority = models.PositiveSmallIntegerField(
-        verbose_name="Приоритет",
-        choices=Priority.choices,
-        default=Priority.medium
-    )
-    due_date = models.DateField(verbose_name="Дата дедлайна")
