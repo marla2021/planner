@@ -3,7 +3,7 @@ version: "3.9"
 services:
 
   api:
-    image: marla4/planner:master-2184981477
+    build: marla4/planner:master-2184981477
     ports:
       - 80:8000
     environment:
@@ -21,7 +21,7 @@ services:
       sh -c "python3 manage.py runserver 0.0.0.0:8000"
 
   migrations:
-    image: marla4/planner:master-2184981477
+    build: marla4/planner:master-2184981477
     environment:
       DB_HOST: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
