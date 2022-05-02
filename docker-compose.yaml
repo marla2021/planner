@@ -3,7 +3,9 @@ version: "3.9"
 services:
 
   api:
-    build: marla4/planner:master-2184981477
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - 80:8000
     environment:
@@ -11,7 +13,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       SECRET_KEY: ${SECRET_KEY}
       SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
     depends_on:
       postgres:
         condition: service_healthy
@@ -21,23 +23,24 @@ services:
       sh -c "python3 manage.py runserver 0.0.0.0:8000"
 
   migrations:
-    build: marla4/planner:master-2184981477
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       DB_HOST: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       SECRET_KEY: ${SECRET_KEY}
       SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
 
     depends_on:
       postgres:
         condition: service_healthy
     command: >
-      sh -c "python3 manage.py makemigrations &&
-            python3 manage.py migrate"
+      sh -c "python3 manage.py migrate"
 
   postgres:
-    image: postgres:latest
+    build: postgres:latest
     environment:
       POSTGRES_USER: marla
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
