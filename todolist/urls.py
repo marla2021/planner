@@ -34,6 +34,7 @@ urlpatterns = [
     path('‹oauth_path ›/', include('social_django.urls', namespace='social')),
     path('core/', include("core.urls")),
     path("goals/", include("goals.urls")),
+    path("boards/", include("goals.urls")),
     re_path(r'^swagger/$',schema_view.with_ui('swagger', cache_timeout=0),
         name='schema-swagger-ui',
     ),
