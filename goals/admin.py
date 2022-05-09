@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from goals.models import GoalCategory, GoalComment, Goal
+from goals.models import GoalCategory, GoalComment, Goal, Board
 
 
 @admin.register(GoalCategory)
@@ -23,3 +23,8 @@ class GoalCommentAdmin(admin.ModelAdmin):
     list_display_links = ["text"]
     search_fields = ["text"]
     readonly_fields = ("created", "updated")
+
+
+@admin.register(Board)
+class BoardAdmin(admin.ModelAdmin):
+    pass
