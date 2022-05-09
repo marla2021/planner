@@ -6,38 +6,35 @@ from rest_framework.permissions import IsAuthenticated
 
 
 from goals.models import GoalComment
+from goals.permissions import GoalCommentPermissions
 from goals.serializers import CommentSerializer, CommentCreateSerializer
 
 
 class CommentCreateView(CreateAPIView):
     model = GoalComment
     serializer_class = CommentCreateSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class DjangoFilterBac:
-    pass
+    permission_classes = [GoalCommentPermissions]
 
 
 class CommentListView(ListAPIView):
     model = GoalComment
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [GoalCommentPermissions]
     pagination_class = LimitOffsetPagination
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     ordering = ["-id"]
 
     def get_queryset(self):
-        return GoalComment.objects.filter(goal__user = self.request.user)
+        return GoalComment.objects.filter(goal__category__board__participants__user = self.request.user)
 
 
 class CommentView(RetrieveUpdateDestroyAPIView):
     model = GoalComment
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [GoalCommentPermissions]
 
     def get_queryset(self):
-        return GoalComment.objects.filter(goal__user = self.request.user)
+        return GoalComment.objects.filter(goal__category__board__participants__user=self.request.user)
 
 
 
