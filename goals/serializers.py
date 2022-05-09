@@ -24,7 +24,7 @@ class GoalCategoryCreateSerializer(serializers.ModelSerializer):
             role__in = [BoardParticipant.Role.owner, BoardParticipant.Role.writer],
             user= self.context['request'].user
         ).exists():
-            return ValidationError('You must be owner or writer')
+            raise ValidationError('You must be owner or writer')
 
         return value
 
@@ -62,7 +62,7 @@ class GoalCreateSerializer(GoalSerializer):
                 role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
                 user=self.context['request'].user
         ).exists():
-            return ValidationError('You must be owner or writer')
+            raise ValidationError('You must be owner or writer')
         return value
 
 class CommentCreateSerializer(serializers.ModelSerializer):
@@ -77,7 +77,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
                 role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
                 user=self.context['request'].user
         ).exists():
-            return ValidationError('You must be owner or writer')
+            raise ValidationError('You must be owner or writer')
         return value
 
 
@@ -108,7 +108,7 @@ class BoardCreateSerializer(serializers.ModelSerializer):
 
 class BoardParticipantSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(
-        required=True, choices=BoardParticipant.Role.choices.pop(0)
+        required=True, choices=BoardParticipant.Role.choices[1:]
     )
     user = serializers.SlugRelatedField(
         slug_field="username", queryset=User.objects.all()
