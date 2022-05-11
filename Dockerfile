@@ -7,6 +7,8 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR app/
 # install dependencies
+RUN apt-get update
+RUN apt-get -y install gcc
 RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
