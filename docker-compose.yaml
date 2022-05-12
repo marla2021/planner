@@ -1,13 +1,18 @@
 version: "3.9"
 
 services:
-
+  front:
+    image: sermalenk/skypro-front:lesson_37
+    ports:
+      - '80:80'
+    depends_on:
+      - api
   api:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 80:8000
+      - '8000:8000'
     environment:
       DB_HOST: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -40,7 +45,7 @@ services:
       sh -c "python3 manage.py migrate"
 
   postgres:
-    build: postgres:latest
+    image: postgres:13.0-alpine
     environment:
       POSTGRES_USER: marla
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

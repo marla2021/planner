@@ -26,13 +26,13 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     def validate(self, datas):
         password = datas.get("password")
-        password_repeat = datas.get("password_repeat")
+        password_repeat = datas.pop("password_repeat")
         if password != password_repeat:
             raise ValidationError("Пароли не совпадают!")
         return datas
 
     def create(self, validated_data):
-        validated_data['password'] = make_password(validate_password['password'])
+        validated_data['password'] = make_password(validated_data['password'])
         return User.objects.create_user(**validated_data)
 
 
@@ -46,8 +46,8 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(username=username, password=password)
         if not user:
             raise ValidationError("Имя или пароль не верны!")
-        datas["user"] = user
-        return datas
+
+        return user
 
 
 class UserSerializer(serializers.ModelSerializer):
