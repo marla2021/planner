@@ -1,20 +1,21 @@
 from pydantic import BaseModel, Field
+from pydantic.utils import Optional
 
 
 class MessageFrom(BaseModel):
     id: int
     first_name: str
-    last_name: str or None = None
+    last_name: Optional[str] = None
     username: str
 
 
 class Chat(BaseModel):
     id: int
     type: str
-    first_name: str or None = None
-    last_name: str or None = None
-    username: str or None = None
-    title: str or None = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    username: Optional[str] = None
+    title: Optional[str] = None
 
 
 
@@ -22,7 +23,7 @@ class Message(BaseModel):
     message_id: int
     from_: MessageFrom = Field(..., alias="from")
     chat: Chat
-    text: str or None = None
+    text: Optional[str] = None
 
     class Config:
         allow_population_by_field_name = True
