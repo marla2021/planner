@@ -18,20 +18,38 @@ from core.serializers import (
 )
 
 
+def login_model_backend(request, user) -> None:
+    login(
+        request,
+        user=user,
+        backend='django.contrib.auth.backends.ModelBackend'
+    )
+
+
 class SignupView(CreateAPIView):
     model = User
+    permission_classes = [permissions.AllowAny]
     serializer_class = CreateUserSerializer
-    queryset = User.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        ret = super().post(request, *args, **kwargs)
+
+        user = User.objects.get(username=ret.data['username'])
+        login_model_backend(request, user=user)
+
+        return ret
+
 
 
 class LoginView(GenericAPIView):
     serializer_class = LoginSerializer
 
-    def post(self, request, *args, **kwargs):
-        s: LoginSerializer = self.get_serializer(data=request.data)
-        s.is_valid(raise_exception=True)
-        user = s.validated_data["user"]
-        login(request, user=user)
+    def post(self, request, *args, **kwargs) -> Response:
+        user_login: LoginSerializer = self.get_serializer(data=request.data)
+        user_login.is_valid(raise_exception=True)
+        username = user_login.validated_data['username']
+        user = User.objects.get(username=username)
+        login_model_backend(request, user=user)
         user_serializer = UserSerializer(instance=user)
         return Response(user_serializer.data)
 

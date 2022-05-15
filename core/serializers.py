@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -13,26 +12,25 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        read_only_fields = ("id",)
+        read_only_fields = ('id',)
         fields = (
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "email",
-            "password",
-            "password_repeat",
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'password_repeat'
         )
 
-    def validate(self, datas):
-        password = datas.get("password")
-        password_repeat = datas.pop("password_repeat")
+    def validate(self, attrs: dict) -> dict:
+        password: str = attrs.get('password')
+        password_repeat: str = attrs.pop('password_repeat', None)
         if password != password_repeat:
-            raise ValidationError("Пароли не совпадают!")
-        return datas
+            raise ValidationError('passwords are not equal')
+        return attrs
 
-    def create(self, validated_data):
-        validated_data['password'] = make_password(validated_data['password'])
+    def create(self, validated_data) -> User:
         return User.objects.create_user(**validated_data)
 
 
@@ -40,26 +38,26 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
 
-    def validate(self, attrs: dict):
-        username = attrs.get("username")
-        password = attrs.get("password")
+    def validate(self, attrs: dict) -> dict:
+        username = attrs.get('username')
+        password = attrs.get('password')
         user = authenticate(username=username, password=password)
         if not user:
-            raise ValidationError("имя или пароль не верны")
-        attrs["user"] = user
+            raise ValidationError('username or password is incorrect')
         return attrs
+
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        read_only_fields = ("id",)
+        read_only_fields = ('id',)
         fields = (
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "email",
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
         )
 
 
