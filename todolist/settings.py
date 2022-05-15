@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'todolist',
     'core',
     'goals',
+    'bot',
 ]
 
 MIDDLEWARE = [
@@ -169,7 +170,7 @@ SOCIAL_AUTH_VK_OAUTH2_SCOPE = ["email", "photos", "notify"]
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/logged-in/"
 SOCIAL_AUTH_LOGIN_ERROR_URL = "/login-error/"
 
-
+BOT_TOKEN = env.str("BOT_TOKEN")
 
 
 
