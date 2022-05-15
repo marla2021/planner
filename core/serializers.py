@@ -46,6 +46,7 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(username=username, password=password)
         if not user:
             raise ValidationError("Имя или пароль не верны!")
+        datas['user'] = user
         return datas
 
 
