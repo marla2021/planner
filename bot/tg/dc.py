@@ -1,23 +1,14 @@
-from dataclasses import field
-from typing import ClassVar, Type, List
-
-from marshmallow_dataclass import dataclass
-from marshmallow import EXCLUDE, Schema
+from pydantic import BaseModel, Field
 
 
-@dataclass
-class MessageFrom:
+class MessageFrom(BaseModel):
     id: int
     first_name: str
     last_name: str or None = None
-    username: str or None = None
-
-    class Meta:
-        unknown = EXCLUDE
+    username: str
 
 
-@dataclass
-class Chat:
+class Chat(BaseModel):
     id: int
     type: str
     first_name: str or None = None
@@ -25,47 +16,30 @@ class Chat:
     username: str or None = None
     title: str or None = None
 
-    class Meta:
-        unknown = EXCLUDE
 
 
-@dataclass
-class Message:
+class Message(BaseModel):
     message_id: int
-    from_: MessageFrom = field(metadata={"data_key": "from"})
+    from_: MessageFrom = Field(..., alias="from")
     chat: Chat
     text: str or None = None
 
-    class Meta:
-        unknown = EXCLUDE
+    class Config:
+        allow_population_by_field_name = True
 
 
-@dataclass
-class UpdateObj:
+
+class UpdateObj(BaseModel):
     update_id: int
     message: Message
 
-    class Meta:
-        unknown = EXCLUDE
 
-
-@dataclass
-class GetUpdatesResponse:
+class GetUpdatesResponse(BaseModel):
     ok: bool
-    result: List[UpdateObj]
-
-    Schema: ClassVar[Type[Schema]] = Schema
-
-    class Meta:
-        unknown = EXCLUDE
+    result: list[UpdateObj]
 
 
-@dataclass
-class SendMessageResponse:
+class SendMessageResponse(BaseModel):
     ok: bool
     result: Message
 
-    Schema: ClassVar[Type[Schema]] = Schema
-
-    class Meta:
-        unknown = EXCLUDE

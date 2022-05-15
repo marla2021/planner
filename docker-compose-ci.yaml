@@ -2,16 +2,17 @@ version: "3.9"
 
 services:
   front:
-    image: sermalenk/skypro-front:lesson_37
+    image: sermalenk/skypro-front:lesson_38
+    restart: always
     ports:
-      - '8080:80'
+      - '80:80'
     depends_on:
       - api
 
   api:
     image: marla4/planner:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     ports:
-      - 80:8000
+      - 8000:8000
     environment:
       DB_HOST: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
