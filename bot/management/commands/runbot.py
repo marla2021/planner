@@ -19,20 +19,18 @@ class Command(BaseCommand):
     def _generate_verification_code() -> str:
         return os.urandom(12).hex()
 
-    def handle_goal_list(self, msg: Message, tg_user=TgUser):
+    def handle_goal_list(self, msg: Message, tg_user: TgUser):
         resp_goals: list[str] = [
             f'{goal.id, goal.title}'
             for goal in Goal.objects.filter(user_id=tg_user.user)
         ]
         self.tg_client.send_message(msg.chat.id, '\n'.join(resp_goals) or '[no goals found]')
 
-
     def handle_verified_user(self, msg: Message, tg_user: TgUser):
         if "/goals" in msg.text:
             self.handle_goal_list(msg=msg, tg_user=tg_user)
         else:
             self.tg_client.send_message(msg.chat.id, "[unknown command]")
-
 
     def handle_user_without_verification(self, msg: Message, tg_user: TgUser):
         code: str = self._generate_verification_code()
@@ -41,10 +39,9 @@ class Command(BaseCommand):
         self.tg_client.send_message(chat_id=msg.chat.id,
                                     text=f'[verification code] {code}')
 
-
     def handle_message(self, msg: Message):
         tg_user, created = TgUser.objects.get_or_create(
-            chat_id =msg.chat.id,
+            chat_id=msg.chat.id,
             defaults={
                 "username": msg.from_.username,
             },
@@ -54,11 +51,10 @@ class Command(BaseCommand):
         elif not tg_user.user:
             self.handle_user_without_verification(msg=msg, tg_user=tg_user)
 
-
     def handle(self, *args, **kwargs):
         offset = 0
         while True:
-            res = self.tg_client.get_updates(offset=offset)
-            for item in res.result:
+            resp = self.tg_client.get_updates(offset=offset)
+            for item in resp.result:
                 offset = item.update_id + 1
                 self.handle_message(item.message)
