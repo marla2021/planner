@@ -40,14 +40,14 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
 
-    def validate(self, datas:dict)-> dict:
-        username = datas.get("username")
-        password = datas.get("password")
+    def validate(self, attrs: dict):
+        username = attrs.get("username")
+        password = attrs.get("password")
         user = authenticate(username=username, password=password)
         if not user:
-            raise ValidationError("Имя или пароль не верны!")
-        datas['user'] = user
-        return datas
+            raise ValidationError("имя или пароль не верны")
+        attrs["user"] = user
+        return attrs
 
 
 class UserSerializer(serializers.ModelSerializer):
