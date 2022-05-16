@@ -172,6 +172,16 @@ SOCIAL_AUTH_LOGIN_ERROR_URL = "/login-error/"
 
 BOT_TOKEN = env.str("BOT_TOKEN")
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1",
+    "http://localhost",
+]
+
+
 
 
 
