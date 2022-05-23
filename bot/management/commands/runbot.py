@@ -18,20 +18,20 @@ class Command(BaseCommand):
     @staticmethod
     def _generate_verification_code() -> str:
         return os.urandom(12).hex()
-    #
-    # def handle_goal_list(self, msg: Message, tg_user: TgUser):
-    #     resp_goals: list[str] = [
-    #         f'{goal.id, goal.title}'
-    #         for goal in Goal.objects.filter(user_id=tg_user.user)
-    #     ]
-    #     self.tg_client.send_message(msg.chat.id, '\n'.join(resp_goals) or '[no goals found]')
-    #
-    # def handle_verified_user(self, msg: Message, tg_user: TgUser):
-    #     if "/goals" in msg.text:
-    #         self.handle_goal_list(msg=msg, tg_user=tg_user)
-    #     else:
-    #         self.tg_client.send_message(msg.chat.id, "[unknown command]")
-    #
+
+    def handle_goal_list(self, msg: Message, tg_user: TgUser):
+        resp_goals: list[str] = [
+            f'{goal.id, goal.title}'
+            for goal in Goal.objects.filter(user_id=tg_user.user)
+        ]
+        self.tg_client.send_message(msg.chat.id, '\n'.join(resp_goals) or '[no goals found]')
+
+    def handle_verified_user(self, msg: Message, tg_user: TgUser):
+        if "/goals" in msg.text:
+            self.handle_goal_list(msg=msg, tg_user=tg_user)
+        else:
+            self.tg_client.send_message(msg.chat.id, "[unknown command]")
+
     def handle_user_without_verification(self, msg: Message, tg_user: TgUser):
         code: str = self._generate_verification_code()
         tg_user.verification_code = code
