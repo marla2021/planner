@@ -4,12 +4,12 @@ from freezegun import freeze_time
 
 @pytest.mark.django_db
 @freeze_time('2022-05-01T13:06:12.461236Z')
-def test_list(client, category):
+def test_list(client):
     response = client.get(
         "/goals/goal_category/list/",
     )
     expected_response = {
-        "id": category.id,
+        "id": 1,
         "user": {
             "id": 1,
             "username": "mar.la",

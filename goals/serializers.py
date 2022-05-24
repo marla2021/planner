@@ -55,14 +55,19 @@ class GoalSerializer(serializers.ModelSerializer):
         return value
 
 class GoalCreateSerializer(GoalSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault)
+    category = serializers.PrimaryKeyRelatedField(queryset=GoalCategory.objects.all())
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     def validate_category(self, value):
+        if value.is_deleted:
+            raise serializers.ValidationError('Not allowed in deleted category')
+
         if not BoardParticipant.objects.filter(
-                board=value.board_id,
+                board_id=value.board_id,
                 role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
-                user=self.context['request'].user
+                user=self.context['request'].user,
         ).exists():
-            raise ValidationError('You must be owner or writer')
+            raise serializers.ValidationError('Must be owner or writer in project')
         return value
 
 class CommentCreateSerializer(serializers.ModelSerializer):

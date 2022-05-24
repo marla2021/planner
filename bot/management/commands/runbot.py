@@ -21,7 +21,7 @@ class Command(BaseCommand):
 
     def handle_goal_list(self, msg: Message, tg_user: TgUser):
         resp_goals: list[str] = [
-            f'{goal.id, goal.title}'
+            f'#{goal.id}, {goal.title}'
             for goal in Goal.objects.filter(user_id=tg_user.user)
         ]
         self.tg_client.send_message(msg.chat.id, '\n'.join(resp_goals) or '[no goals found]')
@@ -50,11 +50,9 @@ class Command(BaseCommand):
             self.tg_client.send_message(msg.chat.id, "[Hello!]")
         elif not tg_user.user:
             self.handle_user_without_verification(msg=msg, tg_user=tg_user)
+        else:
+            self.handle_verified_user(msg=msg, tg_user=tg_user)
 
-        # if TgUser.objects.filter(chat_id=msg.chat.id).exists():
-        #     self.tg_client.send_message(msg.chat.id, "[exists]")
-        # else:
-        #     self.tg_client.send_message(msg.chat.id, "[Hello!]")
     def handle(self, *args, **kwargs):
         offset = 0
         while True:

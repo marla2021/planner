@@ -6,13 +6,13 @@ from rest_framework.pagination import LimitOffsetPagination
 
 from goals.models import GoalCategory, Goal
 from goals.permissions import GoalCategoryPermissions
-from goals.serializers import GoalCreateSerializer, GoalCategorySerializer
+from goals.serializers import GoalCategorySerializer, GoalCategoryCreateSerializer
 
 
 class GoalCategoryCreateView(CreateAPIView):
     model = GoalCategory
     permission_classes = [GoalCategoryPermissions]
-    serializer_class = GoalCreateSerializer
+    serializer_class = GoalCategoryCreateSerializer
 
 class GoalCategoryListView(ListAPIView):
     model = GoalCategory

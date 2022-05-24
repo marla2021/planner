@@ -21,7 +21,7 @@ class GoalView(RetrieveUpdateDestroyAPIView):
     serializer_class = GoalSerializer
 
     def get_queryset(self):
-        return Goal.objects.filter(category__boar____participants__user=self.request.user)
+        return Goal.objects.filter(category__board__participants__user_id=self.request.user.id)
 
     def perform_destroy(self, instance):
         instance.status = Goal.Status.archived
@@ -41,6 +41,6 @@ class GoalListView(ListAPIView):
     search_fields = ["title", 'description']
 
     def get_queryset(self):
-        return Goal.objects.filter(category__boar____participants__user=self.request.user)
+        return Goal.objects.filter(category__board__participants__user_id=self.request.user.id)
 
 
