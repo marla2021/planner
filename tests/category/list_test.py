@@ -25,4 +25,4 @@ def test_list(client):
     }
 
     assert response.status_code == 200
-    assert response.data == expected_response
+    assert response.json() == expected_response
