@@ -2,23 +2,24 @@ version: "3.9"
 
 services:
   front:
-    image: sermalenk/skypro-front:lesson_37
+    image: sermalenk/skypro-front:lesson_38
     restart: always
     ports:
       - '80:80'
     depends_on:
-      - api
+      postgres:
+        condition: service_healthy
 
   api:
     image: marla4/planner:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     ports:
-      - 8000:8000
+      - '8000:8000'
     environment:
       DB_HOST: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       SECRET_KEY: ${SECRET_KEY}
       SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
     depends_on:
       postgres:
         condition: service_healthy
@@ -34,17 +35,16 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       SECRET_KEY: ${SECRET_KEY}
       SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
 
     depends_on:
       postgres:
         condition: service_healthy
     command: >
-      sh -c "python3 manage.py makemigrations &&
-            python3 manage.py migrate"
+      sh -c "python3 manage.py migrate"
 
   postgres:
-    image: postgres:latest
+    image: postgres:13.0-alpine
     environment:
       POSTGRES_USER: marla
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -56,6 +56,8 @@ services:
       retries: 5
     volumes:
       - pg_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
 
 volumes:
   pg_data:
