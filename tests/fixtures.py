@@ -89,5 +89,5 @@ def logged_in_user1(client, user2):
 
 @pytest.fixture()
 @pytest.mark.django_db
-def comment(client, goal):
-    return GoalComment.objects.create(text="test",goal=goal)
+def comment(client, goal, logged_in_user):
+    return GoalComment.objects.create(text="test",goal=goal, user = logged_in_user)
