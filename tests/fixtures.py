@@ -68,11 +68,24 @@ def board2_participants(client, board2, user1):
 def category(client, user1, board, board_participants):
     return GoalCategory.objects.create(title="test", user=user1, board=board)
 
+
 @pytest.fixture()
 @pytest.mark.django_db
 def goal(client, category, logged_in_user):
     return Goal.objects.create(title="test", category=category, due_date="2022-05-30", user= logged_in_user)
 
+
+@pytest.fixture()
+@pytest.mark.django_db
+def goal_category(client,category, logged_in_user):
+    return Goal.objects.create(title="test", category=category, due_date="2022-05-30", user = logged_in_user)
+
+
+@pytest.fixture()
+@pytest.mark.django_db
+def logged_in_user1(client, user2):
+    client.login(username="test", password="test")
+    return user2
 
 @pytest.fixture()
 @pytest.mark.django_db
