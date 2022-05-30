@@ -18,16 +18,16 @@ def test_create_category(client, logged_in_user):
 
     assert response.status_code == 201
 
-# @pytest.mark.django_db
-# def test_create_category_unauthorized(client, board, user2):
-#
-#     response = client.post(
-#         "/goals/goal_category/create",
-#         {
-#             "title": "TEST2",
-#             "board": board.id,
-#         },
-#         content_type="application/json"
-#     )
-#
-#     assert response.status_code == 404
+@pytest.mark.django_db
+def test_create_category_unauthorized(client):
+    board = Board.objects.create(title="TEST")
+    response = client.post(
+        "/goals/goal_category/create",
+        {
+            "title": "TEST2",
+            "board": board.id,
+        },
+        content_type="application/json"
+    )
+
+    assert response.status_code == 404
