@@ -1,29 +1,19 @@
 import pytest
-from freezegun import freeze_time
+
+from goals.models import GoalCategory
+from goals.serializers import GoalCategorySerializer
 
 
 @pytest.mark.django_db
-@freeze_time('2022-05-01T13:06:12.461236Z')
-def test_list(client, logged_in_user):
+def test_list_category(client, logged_in_user, board, board_participants,board2_participants):
+    category_1 = GoalCategory.objects.create(title="test", user=logged_in_user, board=board)
+    category_2 = GoalCategory.objects.create(title="test2", user=logged_in_user, board=board)
 
-    response = client.get(
-        "/goals/goal_category/list",
-    )
-    expected_response = {
-        "id": 1,
-        "user": {
-            "id": logged_in_user.id,
-            "username": "mar.la",
-            "first_name": None,
-            "last_name": None,
-            "email": None
-        },
-        "created": '2022-05-01T13:06:12.461236Z',
-        "updated": '2022-05-01T13:06:12.461236Z',
-        "title": "test",
-        "is_deleted": False,
-        "board": 1
-    }
+    expected_response = [
+        GoalCategorySerializer(category_1).data,
+        GoalCategorySerializer(category_2).data,
+    ]
+    response = client.get("/goals/goal_category/list")
 
     assert response.status_code == 200
-    assert response.json() == expected_response
+    assert response.data == expected_response

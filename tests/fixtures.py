@@ -1,7 +1,7 @@
 import pytest
 
 from core.models import User
-from goals.models import Board, BoardParticipant, GoalCategory
+from goals.models import Board, BoardParticipant, GoalCategory, Goal
 
 USER_NAME = "username"
 USER_PASSWORD = "userpassword"
@@ -46,11 +46,29 @@ def board(client):
 
 @pytest.fixture()
 @pytest.mark.django_db
+def board2(client):
+    return Board.objects.create(title="test2")
+
+
+@pytest.fixture()
+@pytest.mark.django_db
 def board_participants(client, board, user1):
     return BoardParticipant.objects.create(board=board, user = user1)
 
 
 @pytest.fixture()
 @pytest.mark.django_db
+def board2_participants(client, board2, user1):
+    return BoardParticipant.objects.create(board=board2, user=user1)
+
+
+
+@pytest.fixture()
+@pytest.mark.django_db
 def category(client, user1, board, board_participants):
     return GoalCategory.objects.create(title="test", user=user1, board=board)
+
+@pytest.fixture()
+@pytest.mark.django_db
+def goal(client, category, logged_in_user):
+    return Goal.objects.create(title="test", category=category, due_date="2022-05-30", user= logged_in_user)

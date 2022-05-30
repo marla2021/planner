@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.django_db
-def test_create_goal(client, user1, category):
+def test_create_goal(client, logged_in_user, category):
 
     response = client.post(
         "/goals/goal/create",
