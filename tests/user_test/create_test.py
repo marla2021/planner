@@ -1,5 +1,4 @@
 import pytest
-from django.urls import reverse
 
 from core.models import User
 
@@ -9,9 +8,6 @@ def test_user_create():
     User.objects.create_user("test", "test@test.ru", "test")
     assert User.objects.count() == 1
 
-@pytest.fixture()
-def user_1(db):
-    return User.objects.create_user("test_user")
 
 @pytest.mark.django_db
 def test_set_check_password(user_1):
