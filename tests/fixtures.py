@@ -77,8 +77,8 @@ def goal(client, category, logged_in_user):
 
 @pytest.fixture()
 @pytest.mark.django_db
-def goal_category(client,category, logged_in_user):
-    return Goal.objects.create(title="test", category=category, due_date="2022-05-30", user = logged_in_user)
+def category_user1(client,category, user1, board):
+    return GoalCategory.objects.create(title="test", user=user1, board=board)
 
 
 @pytest.fixture()
@@ -89,5 +89,10 @@ def logged_in_user1(client, user2):
 
 @pytest.fixture()
 @pytest.mark.django_db
-def comment(client, goal, logged_in_user):
-    return GoalComment.objects.create(text="test",goal=goal, user = logged_in_user)
+def comment(client, goal):
+    return GoalComment.objects.create(text="test",goal=goal)
+
+@pytest.fixture()
+@pytest.mark.django_db
+def goal_user2(client, category, user2):
+    return Goal.objects.create(title="test", category=category, due_date="2022-05-30", user= user2)

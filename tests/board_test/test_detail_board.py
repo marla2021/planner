@@ -11,3 +11,5 @@ def test_detail_board(client,logged_in_user, board, board_participants):
 
     assert response.status_code == 200
     assert response.json() == expected_response
+
+

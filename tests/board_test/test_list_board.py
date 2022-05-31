@@ -1,5 +1,6 @@
 import pytest
 
+from core.models import User
 from goals.serializers import BoardListSerializer
 
 
@@ -14,8 +15,3 @@ def test_list_board(client, logged_in_user,board, board2,board_participants,boar
     assert response.status_code == 200
     assert response.json() == expected_response
 
-# @pytest.mark.django_db
-# def test_board_unauthorized(client, board, board2, board_participants,board2_participants):
-#     response = client.get("/goals/board/list")
-#
-#     assert response.status_code == 404

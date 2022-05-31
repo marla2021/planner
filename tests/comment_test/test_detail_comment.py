@@ -6,7 +6,7 @@ from goals.serializers import CommentSerializer
 
 
 @pytest.mark.django_db
-def test_detail_comment(client, logged_in_user, comment):
+def test_detail_comment(client, comment):
     expected_response = CommentSerializer(comment).data
 
     response = client.get(f"/goals/goal_comment/{comment.id}")
@@ -16,8 +16,8 @@ def test_detail_comment(client, logged_in_user, comment):
 
 
 @pytest.mark.django_db
-def test_detail_comment_unauthor(client, goal):
-    comment = GoalComment.objects.create(text="test",goal=goal)
+def test_detail_comment_unauthor(client, comment):
+
     response = client.get(f"/goals/goal_comment/{comment.id}")
 
     assert response.status_code == 200

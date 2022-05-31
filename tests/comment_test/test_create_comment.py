@@ -19,16 +19,16 @@ def test_create_comment(client, logged_in_user, category):
     assert response.status_code == 201
 
 @pytest.mark.django_db
-def test_create_comment_unauthorize(client, user1, goal):
+def test_create_comment_unauthorize(client,user2, goal_user2):
 
     response = client.post(
         "/goals/goal_comment/create",
         {
             "text": "test3",
-            "goal": goal.id,
-            "user": user1.id
+            "goal": goal_user2.id,
+            "user": user2.id
         },
         content_type="application/json"
     )
 
-    assert response.status_code == 201
+    assert response.status_code == 404

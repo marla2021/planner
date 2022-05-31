@@ -21,17 +21,16 @@ def test_create_goal(client, logged_in_user, category):
 
 
 # @pytest.mark.django_db
-# def test_create_goal_unauthor(client, board):
-#     user = User.objects.create_user("test")
-#     category = GoalCategory.objects.create(title="test", user=user, board=board)
+# def test_create_goal_unauthor(client, category_user1, board):
+#
 #     response = client.post(
 #         "/goals/goal/create",
 #         {
 #             "title": "TEST",
-#             "category": category.id,
+#             "category": category_user1.id,
 #             "due_date" : "2022-05-30"
 #         },
 #         content_type="application/json"
 #     )
-
-    assert response.status_code == 404
+#
+#     assert response.status_code == 404
