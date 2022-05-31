@@ -4,7 +4,8 @@ from goals.models import GoalComment
 
 
 @pytest.mark.django_db
-def test_delete_comment(client, comment):
+def test_delete_comment(client, goal):
+    comment = GoalComment.objects.create(text="test",goal=goal)
+    response = client.get(f"/goals/goal_comment/{comment.id}")
 
-    response = client.delete(f"/goals/goal_comment/{comment.id}")
-    assert response.status_code == 404
+    assert response.status_code == 200
