@@ -5,7 +5,7 @@ from goals.serializers import CommentSerializer
 
 
 @pytest.mark.django_db
-def test_update_comment(client, comment):
+def test_update_comment_unauth(client, comment):
     expected_response = CommentSerializer(comment).data
     expected_response["text"] = "test10"
 
@@ -15,5 +15,5 @@ def test_update_comment(client, comment):
         content_type="application/json"
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 403
 

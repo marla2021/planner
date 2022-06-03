@@ -31,4 +31,4 @@ def test_create_comment_unauthorize(client,user2, goal_user2):
         content_type="application/json"
     )
 
-    assert response.status_code == 404
+    assert response.status_code == 403
