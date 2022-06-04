@@ -15,3 +15,4 @@ def test_list_board(client, logged_in_user,board, board2,board_participants,boar
     assert response.status_code == 200
     assert response.json() == expected_response
 
+

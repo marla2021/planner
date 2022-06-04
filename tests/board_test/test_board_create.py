@@ -13,7 +13,7 @@ def test_create_authorized(client, logged_in_user):
 
 
 @pytest.mark.django_db
-def test_create_unauthorized(client):
+def test_create_unauthorized(client, board, board_participants):
     response = client.post(
         "/goals/board/create/",
         {"title": "test"},

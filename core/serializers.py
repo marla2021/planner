@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, AuthenticationFailed
 
 from core.models import User
 
@@ -39,12 +39,9 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, attrs: dict) -> dict:
-        username = attrs.get('username')
-        password = attrs.get('password')
-        user = authenticate(username=username, password=password)
-        if not user:
-            raise ValidationError('username or password is incorrect')
-        return attrs
+        if user := authenticate(username=attrs['username'], password=attrs['password']):
+            return user
+        raise AuthenticationFailed
 
 
 
